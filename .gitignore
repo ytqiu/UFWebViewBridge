@@ -5,9 +5,7 @@ xcuserdata/
 *.iml
 .gradle
 /local.properties
-/.idea/
-/.idea/workspace.xml
-/.idea/libraries
+/.idea/*
 .DS_Store
 /build
 /captures
