@@ -22,6 +22,8 @@ import java.util.Map;
  */
 
 public class WebViewBridge {
+    private static final String TAG = "ufwvbridge";
+
     private static Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
     private Map<Integer, WebViewBridgeJSApiCallback> callbacks = new HashMap<>();
@@ -31,8 +33,6 @@ public class WebViewBridge {
         this.webView = webView;
 
         webView.addJavascriptInterface(this, "apis");
-
-
     }
 
     private static String getJSBridgeAsset(Context context) {
@@ -65,7 +65,7 @@ public class WebViewBridge {
     }
 
     public void callJSApi(final String jsapi, final Object param, final WebViewBridgeJSApiCallback callback) {
-        Log.e("testtest", "callJSApi: " + jsapi);
+        Log.d(TAG, "callJSApi: " + jsapi);
         webView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -98,7 +98,7 @@ public class WebViewBridge {
 
     @JavascriptInterface
     public void postMessage(String message) {
-        Log.e("testtest", "js post message: " + message);
+        Log.d(TAG, "js post message: " + message);
         JsonElement element = new Gson().fromJson(message, JsonElement.class);
         if (!element.isJsonObject()) {
             return;
@@ -127,7 +127,7 @@ public class WebViewBridge {
     @JavascriptInterface
     public void jsCallReturn(int callId, String result) {
         JsonElement resultElem = new Gson().fromJson(result, JsonElement.class);
-        Log.e("testtest", "jsCallReturn: " + resultElem);
+        Log.d(TAG, "jsCallReturn: " + resultElem);
         if (callbacks.containsKey(callId)) {
             WebViewBridgeJSApiCallback jsApiCallback = callbacks.get(callId);
             jsApiCallback.done(resultElem);

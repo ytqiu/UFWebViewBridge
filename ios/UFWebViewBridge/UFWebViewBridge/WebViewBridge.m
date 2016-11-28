@@ -72,7 +72,6 @@
     if (api.length <= 0) {
         return;
     }
-    NSLog(@"...........message: %@ - %@ - %lu", api, params, callId);
     
     WebViewNativeAPI nativeAPI = [self __bridge_apis][api];
     if (nativeAPI) {
