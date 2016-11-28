@@ -1,0 +1,29 @@
+{
+  "name": "UFWebViewBridge",
+  "version": "0.0.1",
+  "summary": "An Unified WebView Bridge with Android && iOS platform.",
+  "description": "The first unified WebView bridge for Android && iOS. it has simple interface for HTML, so it will take off the burden for my frontend developer. they do not need write a lot of if-else any more.",
+  "homepage": "https://github.com/ytqiu/UFWebViewBridge",
+  "license": "MIT",
+  "authors": {
+    "邱亚涛": "qiuyatao@117sport.com"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source": {
+    "git": "https://github.com/ytqiu/UFWebViewBridge.git",
+    "tag": "0.0.1"
+  },
+  "source_files": [
+    "ios/UFWebViewBridge/UFWebViewBridge",
+    "ios/UFWebViewBridge/UFWebViewBridge/**/*.{h,m}"
+  ],
+  "exclude_files": "Classes/Exclude",
+  "resource_bundles": {
+    "ufwebviewbridge": [
+      "*.js",
+      "*.html"
+    ]
+  }
+}
