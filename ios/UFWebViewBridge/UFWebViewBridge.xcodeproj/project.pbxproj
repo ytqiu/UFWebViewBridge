@@ -12,7 +12,6 @@
 		F48982061DEC16CA003A2AD5 /* UFWebViewBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = F48981F81DEC16CA003A2AD5 /* UFWebViewBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F48982111DEC16F5003A2AD5 /* WebViewBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = F489820F1DEC16F5003A2AD5 /* WebViewBridge.h */; };
 		F48982121DEC16F5003A2AD5 /* WebViewBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F48982101DEC16F5003A2AD5 /* WebViewBridge.m */; };
-		F48982161DEC17BA003A2AD5 /* UFWebViewBridge.podspec in Resources */ = {isa = PBXBuildFile; fileRef = F48982151DEC17BA003A2AD5 /* UFWebViewBridge.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +33,6 @@
 		F48982051DEC16CA003A2AD5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F489820F1DEC16F5003A2AD5 /* WebViewBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewBridge.h; sourceTree = "<group>"; };
 		F48982101DEC16F5003A2AD5 /* WebViewBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewBridge.m; sourceTree = "<group>"; };
-		F48982151DEC17BA003A2AD5 /* UFWebViewBridge.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UFWebViewBridge.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +57,6 @@
 		F48981EB1DEC16CA003A2AD5 = {
 			isa = PBXGroup;
 			children = (
-				F48982151DEC17BA003A2AD5 /* UFWebViewBridge.podspec */,
 				F48981F71DEC16CA003A2AD5 /* UFWebViewBridge */,
 				F48982021DEC16CA003A2AD5 /* UFWebViewBridgeTests */,
 				F48981F61DEC16CA003A2AD5 /* Products */,
@@ -188,7 +185,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F48982161DEC17BA003A2AD5 /* UFWebViewBridge.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +394,7 @@
 				F489820B1DEC16CA003A2AD5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F489820C1DEC16CA003A2AD5 /* Build configuration list for PBXNativeTarget "UFWebViewBridgeTests" */ = {
 			isa = XCConfigurationList;
@@ -406,6 +403,7 @@
 				F489820E1DEC16CA003A2AD5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
