@@ -28,5 +28,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
 //    compile project(':ufwebviewbridge')
-    compile 'com.github.ytqiu:UFWebViewBridge:-SNAPSHOT'
+    compile 'com.github.ytqiu:UFWebViewBridge:0.0.1'
 }

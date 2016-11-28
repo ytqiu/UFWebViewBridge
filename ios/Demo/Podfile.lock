@@ -2,15 +2,21 @@ PODS:
   - UFWebViewBridge (0.0.1)
 
 DEPENDENCIES:
-  - UFWebViewBridge (from `../../`)
+  - UFWebViewBridge (from `https://github.com/ytqiu/UFWebViewBridge.git`, tag `0.0.1`)
 
 EXTERNAL SOURCES:
   UFWebViewBridge:
-    :path: ../../
+    :git: https://github.com/ytqiu/UFWebViewBridge.git
+    :tag: 0.0.1
+
+CHECKOUT OPTIONS:
+  UFWebViewBridge:
+    :git: https://github.com/ytqiu/UFWebViewBridge.git
+    :tag: 0.0.1
 
 SPEC CHECKSUMS:
   UFWebViewBridge: b835ad35ff7e84dda7a6e02e1c0f3c8fe9b3e637
 
-PODFILE CHECKSUM: 25ffc42935f8cbb07c093494bf087a634276309e
+PODFILE CHECKSUM: 986581296af9c683e48147346834fb369bd803b7
 
 COCOAPODS: 1.0.1
