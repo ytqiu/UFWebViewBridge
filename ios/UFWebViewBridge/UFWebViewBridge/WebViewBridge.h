@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 
-typedef id(^WebViewNativeAPI)(id params);
+typedef void(^WebViewNativeAPIReturnBlock)(id result);
+typedef void(^WebViewNativeAPI)(id params, WebViewNativeAPIReturnBlock returnBlock);
 typedef void(^WebViewBridgeSetupBlock)(NSMutableDictionary *apis);
 typedef void(^WebViewJSAPICallback)(id result, NSError *error);
 

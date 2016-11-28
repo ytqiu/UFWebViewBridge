@@ -21,15 +21,16 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.webView = [[WKWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.webView bridge_setup:^(NSMutableDictionary *apis) {
-        apis[@"hello"] = (id)^(NSDictionary *params) {
+        apis[@"hello"] = ^(NSDictionary *params, WebViewNativeAPIReturnBlock returnBlock) {
             NSLog(@"web bridge hello called....: %@", params);
-            return params;
+            returnBlock(params);
         };
     }];
     
     [self.view addSubview:self.webView];
     
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"index" withExtension:@"html"]]];
+//    [self.webView loadRequest:[NSURLRequest requestWithURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"index" withExtension:@"html"]]];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.140:3000"]]];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.webView bridge_callJSAPI:@"abc" params:@[@(1), @(1.1f)] callback:^(id result, NSError *error) {

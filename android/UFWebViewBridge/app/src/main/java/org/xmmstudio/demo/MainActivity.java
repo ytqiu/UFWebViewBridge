@@ -29,18 +29,11 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         final WebViewBridge webViewBridge = new WebViewBridge(webView);
-        webViewBridge.registerApiHandler("log", new WebViewBridge.WebViewBridgeApiHandler() {
-            @Override
-            public Object call(JsonElement paramElem) {
-                Log.e("testtest", "web bridge log-: " + paramElem.getAsString());
-                return null;
-            }
-        });
         webViewBridge.registerApiHandler("hello", new WebViewBridge.WebViewBridgeApiHandler() {
             @Override
-            public Object call(JsonElement paramElem) {
+            public void call(JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
                 Log.e("testtest", "hello: " + new Gson().toJson(paramElem));
-                return paramElem;
+                apiReturn.done(paramElem);
             }
         });
 

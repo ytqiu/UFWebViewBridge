@@ -29,6 +29,22 @@ public class WebViewBridge {
     private Map<Integer, WebViewBridgeJSApiCallback> callbacks = new HashMap<>();
     private WebView webView;
 
+    static {
+        registerApiHandler("log", new WebViewBridge.WebViewBridgeApiHandler() {
+            @Override
+            public void call(JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
+                Log.d(TAG, "[log]: " + paramElem.getAsString());
+            }
+        });
+
+        registerApiHandler("checkApi", new WebViewBridgeApiHandler() {
+            @Override
+            public void call(JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
+                apiReturn.done(paramElem != null && paramElem.isJsonPrimitive() && WebViewBridge.checkApiExist(paramElem.getAsString()));
+            }
+        });
+    }
+
     public WebViewBridge(final WebView webView) {
         this.webView = webView;
 
@@ -62,6 +78,10 @@ public class WebViewBridge {
         if (api != null && apiHandler != null && api.trim().length() > 0) {
             apiHandlers.put(api, apiHandler);
         }
+    }
+
+    public static boolean checkApiExist(String api) {
+        return apiHandlers.containsKey(api);
     }
 
     public void callJSApi(final String jsapi, final Object param, final WebViewBridgeJSApiCallback callback) {
@@ -105,7 +125,7 @@ public class WebViewBridge {
         }
 
         JsonElement apiElem = element.getAsJsonObject().get("api");
-        JsonElement callIdElem = element.getAsJsonObject().get("callId");
+        final JsonElement callIdElem = element.getAsJsonObject().get("callId");
         JsonElement paramsElem = element.getAsJsonObject().get("params");
         if (apiElem == null || apiElem.isJsonNull() || !apiElem.isJsonPrimitive()
                 || paramsElem == null || paramsElem.isJsonNull()) {
@@ -118,10 +138,14 @@ public class WebViewBridge {
             return;
         }
 
-        Object result = apiHandler.call(paramsElem);
-        if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
-            callJSCallback(callIdElem.getAsLong(), result);
-        }
+        apiHandler.call(paramsElem, new WebViewBridgeApiReturn() {
+            @Override
+            public void done(Object result) {
+                if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
+                    callJSCallback(callIdElem.getAsLong(), result);
+                }
+            }
+        });
     }
 
     @JavascriptInterface
@@ -136,8 +160,12 @@ public class WebViewBridge {
         }
     }
 
+    public interface WebViewBridgeApiReturn {
+        void done(Object result);
+    }
+
     public interface WebViewBridgeApiHandler {
-        Object call(JsonElement paramElem);
+        void call(JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
     }
 
     public interface WebViewBridgeJSApiCallback {

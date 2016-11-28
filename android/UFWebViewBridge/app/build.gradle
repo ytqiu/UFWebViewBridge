@@ -27,6 +27,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
 
-//    compile project(':ufwebviewbridge')
-    compile 'com.github.ytqiu:UFWebViewBridge:0.0.1'
+    compile project(':ufwebviewbridge')
+//    compile 'com.github.ytqiu:UFWebViewBridge:0.0.1'
 }
