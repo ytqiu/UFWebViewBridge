@@ -1,0 +1,2 @@
+include ':ufwebviewbridge'
+project(':ufwebviewbridge').projectDir = new File(settingsDir, 'android/UFWebViewBridge/ufwebviewbridge')
