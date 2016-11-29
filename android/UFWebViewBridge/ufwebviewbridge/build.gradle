@@ -26,19 +26,17 @@ android {
 
     android.libraryVariants.all { variant ->
         String suffix = variant.name.capitalize()
+        Task bundleTask = tasks.findByName("bundle${suffix}")
         Task mergeAssetsTask = tasks.findByName("merge${suffix}Assets")
 
-        println("******: " + mergeAssetsTask.outputDir + " --- " + projectDir)
-
         Task copyAssetFileTask = tasks.create(name: "copy${suffix}AssetFile", type: Copy) {
-            println("-----*${projectDir}")
-            from "${projectDir}/../../.."
+            from "../../.."
             into "${mergeAssetsTask.outputDir}"
-            include 'jsbridge.js'
-            include 'index.html'
+            include("*.js", "*.html")
         }
 
-        mergeAssetsTask.dependsOn copyAssetFileTask
+        copyAssetFileTask.dependsOn mergeAssetsTask
+        bundleTask.dependsOn copyAssetFileTask
     }
 }
 
