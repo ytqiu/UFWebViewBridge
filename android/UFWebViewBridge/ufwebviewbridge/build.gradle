@@ -30,9 +30,10 @@ android {
         println("******: " + mergeAssetsTask.outputDir + " --- " + projectDir)
 
         Task copyAssetFileTask = tasks.create(name: "copy${suffix}AssetFile", type: Copy) {
+            println("-----*${projectDir}/../../..")
             from "${projectDir}/../../.."
             into "${mergeAssetsTask.outputDir}"
-            include ("*.js", "*.html")
+            include ("*.js")
         }
 
         mergeAssetsTask.dependsOn copyAssetFileTask
