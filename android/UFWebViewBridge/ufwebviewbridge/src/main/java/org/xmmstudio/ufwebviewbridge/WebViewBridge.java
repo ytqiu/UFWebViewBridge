@@ -23,6 +23,7 @@ import java.util.Map;
 
 public class WebViewBridge {
     private static final String TAG = "ufwvbridge";
+    private static final String JSBRIDGE_FILE = "jsbridge.js";
 
     private static Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
@@ -54,7 +55,7 @@ public class WebViewBridge {
     private static String getJSBridgeAsset(Context context) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(context.getAssets().open("jsbridge.js")));
+            reader = new BufferedReader(new InputStreamReader(context.getAssets().open(JSBRIDGE_FILE)));
             StringBuilder builder = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null && !line.matches("^\\s*\\/\\/.*")) {
@@ -86,7 +87,8 @@ public class WebViewBridge {
 
     public void callJSApi(final String jsapi, final Object param, final WebViewBridgeJSApiCallback callback) {
         Log.d(TAG, "callJSApi: " + jsapi);
-        webView.postDelayed(new Runnable() {
+
+        webView.post(new Runnable() {
             @Override
             public void run() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -109,7 +111,7 @@ public class WebViewBridge {
                     }
                 }
             }
-        }, 0);
+        });
     }
 
     public void callJSCallback(long callId, Object param) {
@@ -173,6 +175,7 @@ public class WebViewBridge {
     }
 
     public static class WebViewBridgeClient extends WebViewClient {
+
         @Override
         public void onPageFinished(final WebView view, String url) {
             view.post(new Runnable() {

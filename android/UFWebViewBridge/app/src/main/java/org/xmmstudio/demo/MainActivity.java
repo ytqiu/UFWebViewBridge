@@ -1,9 +1,12 @@
 package org.xmmstudio.demo;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -11,9 +14,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 import org.xmmstudio.ufwebviewbridge.WebViewBridge;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         webView = (WebView) findViewById(R.id.webView);
-        webView.setWebContentsDebuggingEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.setWebContentsDebuggingEnabled(true);
+        }
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
@@ -37,10 +39,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        webView.loadUrl("file:///android_asset/index.html");
-        webView.loadUrl("http://192.168.1.140:3000/index.html");
+        webView.loadUrl("file:///android_asset/index.html");
+//        webView.loadUrl("http://192.168.1.140:3000/index.html");
         webView.setWebViewClient(new WebViewBridge.WebViewBridgeClient() {
 
+        });
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.e("testtest", "message: " + consoleMessage.message());
+                return true;
+            }
         });
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
@@ -48,22 +57,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 Log.e("testtest", "on refresh");
-//                webView.reload();
+                webView.reload();
                 swipeRefreshLayout.setRefreshing(false);
 
 //                webView.loadUrl("javascript:<script>console.log('aaaa')</script>");
 //                webView.loadDataWithBaseURL(null, "<script>console.log('aaaa')</script>", "text/html", "utf-8", null);
 
-                List params = new ArrayList();
-                params.add(1.0f);
-                params.add(2);
-                params.add(1.2f);
-                webViewBridge.callJSApi("abc", params, new WebViewBridge.WebViewBridgeJSApiCallback() {
-                    @Override
-                    public void done(JsonElement paramElem) {
-                        Log.e("testtest", "abc callback: " + paramElem);
-                    }
-                });
+//                List params = new ArrayList();
+//                params.add(1.0f);
+//                params.add(2);
+//                params.add(1.2f);
+//                webViewBridge.callJSApi("abc", params, new WebViewBridge.WebViewBridgeJSApiCallback() {
+//                    @Override
+//                    public void done(JsonElement paramElem) {
+//                        Log.e("testtest", "abc callback: " + paramElem);
+//                    }
+//                });
 
 //                webView.loadUrl("javascript:console.log('hello -refresh')");
 //                webView.loadUrl("javascript:" + webViewBridge.getJSBridgeAsset());

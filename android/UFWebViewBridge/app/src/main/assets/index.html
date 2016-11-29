@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Webpack App</title>
+    </head>
+    <body>
+        <h1>hello world!</h1>
+    </body>
+    <script type="text/javascript">
+        function checkBridge() {
+            console.log('check bridge')
+            if (window.bridge == null) {
+                setTimeout(checkBridge, 100);
+                return;
+            }
+
+            /*window.bridge.log('hello world!!!')
+            window.bridge.registerJSApi('abc', function(params) {
+                window.bridge.log('hello world: ----' + JSON.stringify(params))
+                return [110, "hello"]
+            })
+            window.bridge.callNative('hello', {name: 'ytqiu', age: 110}, function(result) {
+                window.bridge.log('hello world xxxx: ' + JSON.stringify(result))
+            })*/
+            window.bridge.isNativeApiExist('hello', function(exist) {
+                window.bridge.log('hello----------****' + exist)
+            })
+        }
+
+        checkBridge();
+    </script>
+</html>

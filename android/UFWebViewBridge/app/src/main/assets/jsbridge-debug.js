@@ -13,6 +13,7 @@
             return isIOS ? param : (isAndroid ? JSON.stringify(param) : null)
         },
         nativeCall: function (jsapi, params) {
+            console.log('......jsbridge native call: ' + jsapi + " - " + JSON.stringify(params));
             var func = jsapiFuncs[jsapi];
             if (jsapi.indexOf('callback:') == 0) {
                 jsapiFuncs[jsapi] = null
