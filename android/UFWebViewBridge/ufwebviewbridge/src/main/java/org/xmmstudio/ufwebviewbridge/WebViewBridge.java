@@ -32,14 +32,14 @@ public class WebViewBridge {
     static {
         registerApiHandler("log", new WebViewBridge.WebViewBridgeApiHandler() {
             @Override
-            public void call(JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
+            public void call(WebView webView, JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
                 Log.d(TAG, "[log]: " + paramElem.getAsString());
             }
         });
 
         registerApiHandler("checkApi", new WebViewBridgeApiHandler() {
             @Override
-            public void call(JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
+            public void call(WebView webView, JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
                 apiReturn.done(paramElem != null && paramElem.isJsonPrimitive() && WebViewBridge.checkApiExist(paramElem.getAsString()));
             }
         });
@@ -138,7 +138,7 @@ public class WebViewBridge {
             return;
         }
 
-        apiHandler.call(paramsElem, new WebViewBridgeApiReturn() {
+        apiHandler.call(this.webView, paramsElem, new WebViewBridgeApiReturn() {
             @Override
             public void done(Object result) {
                 if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
@@ -165,7 +165,7 @@ public class WebViewBridge {
     }
 
     public interface WebViewBridgeApiHandler {
-        void call(JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
+        void call(WebView webView, JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
     }
 
     public interface WebViewBridgeJSApiCallback {

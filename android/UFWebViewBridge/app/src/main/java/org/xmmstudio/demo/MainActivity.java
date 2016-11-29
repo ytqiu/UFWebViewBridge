@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         final WebViewBridge webViewBridge = new WebViewBridge(webView);
         webViewBridge.registerApiHandler("hello", new WebViewBridge.WebViewBridgeApiHandler() {
             @Override
-            public void call(JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
+            public void call(WebView webView, JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
                 Log.e("testtest", "hello: " + new Gson().toJson(paramElem));
                 apiReturn.done(paramElem);
             }

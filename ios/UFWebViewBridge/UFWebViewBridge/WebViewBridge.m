@@ -19,14 +19,20 @@
     [self.configuration.userContentController addUserScript:[[WKUserScript alloc] initWithSource:[[NSString alloc] initWithData:[NSData dataWithContentsOfURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"jsbridge" withExtension:@"js"]] encoding:NSUTF8StringEncoding] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]];
     
     __weak id wself = self;
-    [self __bridge_apis][@"log"] = ^(NSString *message, WebViewNativeAPIReturnBlock returnBlock) {
+    [self __bridge_apis][@"log"] = ^(WKWebView *webView, NSString *message, WebViewNativeAPIReturnBlock returnBlock) {
         NSLog(@"web.bridge.log: %@", message);
     };
-    [self __bridge_apis][@"checkApi"] = ^(NSString *api, WebViewNativeAPIReturnBlock returnBlock) {
+    [self __bridge_apis][@"checkApi"] = ^(WKWebView *webView, NSString *api, WebViewNativeAPIReturnBlock returnBlock) {
         returnBlock(@([wself __bridge_apiExist:api]));
     };
     
     !setupBlock ?: setupBlock([self __bridge_apis]);
+}
+
+- (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api {
+    if (api.length > 0 && nativeAPI) {
+        [self __bridge_apis][api] = nativeAPI;
+    }
 }
 
 - (NSMutableDictionary *)__bridge_apis {
@@ -83,7 +89,7 @@
     WebViewNativeAPI nativeAPI = [self __bridge_apis][api];
     if (nativeAPI) {
         __weak id wself = self;
-        nativeAPI(params, ^(id result) {
+        nativeAPI(message.webView, params, ^(id result) {
             if (callId > 0) {
                 [wself __bridge_executeJSCallback:callId params:result];
             }
