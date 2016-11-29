@@ -27,10 +27,10 @@ android {
         String suffix = variant.name.capitalize()
         Task mergeAssetsTask = tasks.findByName("merge${suffix}Assets")
 
-//        println("******: " + mergeAssetsTask.outputDir)
+        println("******: " + mergeAssetsTask.outputDir + " --- " + projectDir)
 
         Task copyAssetFileTask = tasks.create(name: "copy${suffix}AssetFile", type: Copy) {
-            from "../../.."
+            from "${projectDir}/../../.."
             into "${mergeAssetsTask.outputDir}"
             include ("*.js", "*.html")
         }
