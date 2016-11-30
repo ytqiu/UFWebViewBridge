@@ -25,12 +25,11 @@ public class WebViewBridge {
     private static final String TAG = "ufwvbridge";
     private static final String JSBRIDGE_FILE = "jsbridge.js";
 
-    private static Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
+    private Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
     private Map<Integer, WebViewBridgeJSApiCallback> callbacks = new HashMap<>();
     private WebView webView;
-
-    static {
+    {
         registerApiHandler("log", new WebViewBridge.WebViewBridgeApiHandler() {
             @Override
             public void call(WebView webView, JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
@@ -41,7 +40,7 @@ public class WebViewBridge {
         registerApiHandler("checkApi", new WebViewBridgeApiHandler() {
             @Override
             public void call(WebView webView, JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
-                apiReturn.done(paramElem != null && paramElem.isJsonPrimitive() && WebViewBridge.checkApiExist(paramElem.getAsString()));
+                apiReturn.done(paramElem != null && paramElem.isJsonPrimitive() && WebViewBridge.this.checkApiExist(paramElem.getAsString()));
             }
         });
     }
@@ -75,13 +74,13 @@ public class WebViewBridge {
         }
     }
 
-    public static void registerApiHandler(String api, WebViewBridgeApiHandler apiHandler) {
+    public void registerApiHandler(String api, WebViewBridgeApiHandler apiHandler) {
         if (api != null && apiHandler != null && api.trim().length() > 0) {
             apiHandlers.put(api, apiHandler);
         }
     }
 
-    public static boolean checkApiExist(String api) {
+    public boolean checkApiExist(String api) {
         return apiHandlers.containsKey(api);
     }
 
