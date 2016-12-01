@@ -1,5 +1,5 @@
 PODS:
-  - UFWebViewBridge (0.0.1)
+  - UFWebViewBridge (0.0.6)
 
 DEPENDENCIES:
   - UFWebViewBridge (from `../../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: ../../
 
 SPEC CHECKSUMS:
-  UFWebViewBridge: b835ad35ff7e84dda7a6e02e1c0f3c8fe9b3e637
+  UFWebViewBridge: 17d04a69ff657a55229815a2d886d24594505079
 
 PODFILE CHECKSUM: 9a5d4e33add9d2d591e6bfdd250c12d392c6c777
 

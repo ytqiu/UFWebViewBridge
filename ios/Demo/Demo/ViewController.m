@@ -33,14 +33,14 @@
     
     [self.view addSubview:self.webView];
     
-//    [self.webView loadRequest:[NSURLRequest requestWithURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"index" withExtension:@"html"]]];
-    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.140:3000"]]];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"index" withExtension:@"html"]]];
+//    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://192.168.1.140:3000"]]];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.webView bridge_callJSAPI:@"abc" params:@[@(1), @(1.1f)] callback:^(id result, NSError *error) {
-            NSLog(@".........call abc: %@ - %@", result, error);
-        }];
-    });
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self.webView bridge_callJSAPI:@"abc" params:@[@(1), @(1.1f)] callback:^(id result, NSError *error) {
+//            NSLog(@".........call abc: %@ - %@", result, error);
+//        }];
+//    });
 }
 
 
