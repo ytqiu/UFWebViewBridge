@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "UFWebViewBridge"
-  s.version      = "0.0.7"
+  s.version      = "0.0.8"
   s.summary      = "An Unified WebView Bridge with Android && iOS platform."
 
   # This description is used to generate tags and improve search results.
