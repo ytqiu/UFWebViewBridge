@@ -16,9 +16,13 @@ typedef void(^WebViewJSAPICallback)(id result, NSError *error);
 
 @interface WKWebView (WebViewBridge)
 
+- (void)bridge_injectJS:(NSString *)jsCode;
+
 - (void)bridge_setup:(WebViewBridgeSetupBlock)setupBlock;
 
 - (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api;
+
+- (void)bridge_registerJSPlugin:(NSString *)plugin;
 
 - (void)bridge_callJSAPI:(NSString *)jsapi params:(id)params callback:(WebViewJSAPICallback)callback;
 

@@ -14,7 +14,9 @@ import com.google.gson.JsonElement;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +30,7 @@ public class WebViewBridge {
     private Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
     private Map<Integer, WebViewBridgeJSApiCallback> callbacks = new HashMap<>();
+    private List<String> plugins = new ArrayList<>();
     private WebView webView;
     {
         registerApiHandler("log", new WebViewBridge.WebViewBridgeApiHandler() {
@@ -48,7 +51,11 @@ public class WebViewBridge {
     public WebViewBridge(final WebView webView) {
         this.webView = webView;
 
+        // enable javascript
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(this, "apis");
+
+        webView.setWebViewClient(new WebViewBridgeClient(this) {});
     }
 
     private static String getJSBridgeAsset(Context context) {
@@ -78,6 +85,27 @@ public class WebViewBridge {
         if (api != null && apiHandler != null && api.trim().length() > 0) {
             apiHandlers.put(api, apiHandler);
         }
+    }
+
+    public void registerJSPlugin(String plugin) {
+        plugins.add(plugin);
+    }
+
+    public void injectJS(final String jsCode) {
+        if (jsCode == null || jsCode.trim().length() <= 0) {
+            return;
+        }
+
+        webView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    webView.evaluateJavascript(jsCode, null);
+                } else {
+                    webView.loadUrl("javascript:" + jsCode);
+                }
+            }
+        });
     }
 
     public boolean checkApiExist(String api) {
@@ -174,19 +202,22 @@ public class WebViewBridge {
     }
 
     public static class WebViewBridgeClient extends WebViewClient {
+        private WebViewBridge webViewBridge;
+        public WebViewBridgeClient(WebViewBridge webViewBridge) {
+            this.webViewBridge = webViewBridge;
+        }
 
         @Override
         public void onPageFinished(final WebView view, String url) {
-            view.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        view.evaluateJavascript(WebViewBridge.getJSBridgeAsset(view.getContext()), null);
-                    } else {
-                        view.loadUrl("javascript:" + WebViewBridge.getJSBridgeAsset(view.getContext()));
+            if (webViewBridge != null) {
+                webViewBridge.injectJS(WebViewBridge.getJSBridgeAsset(view.getContext()));
+
+                for (String plugin : webViewBridge.plugins) {
+                    if (plugin != null && plugin.length() > 0) {
+                        webViewBridge.injectJS(plugin);
                     }
                 }
-            });
+            }
         }
     }
 }

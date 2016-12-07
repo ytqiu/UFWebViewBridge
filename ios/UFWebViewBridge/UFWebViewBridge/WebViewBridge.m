@@ -14,6 +14,12 @@
 
 @implementation WKWebView (WebViewBridge)
 
+- (void)bridge_injectJS:(NSString *)jsCode {
+    if (jsCode.length > 0) {
+        [self.configuration.userContentController addUserScript:[[WKUserScript alloc] initWithSource:jsCode injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO]];
+    }
+}
+
 - (void)bridge_setup:(WebViewBridgeSetupBlock)setupBlock {
     [self.configuration.userContentController addScriptMessageHandler:self name:@"apis"];
     [self.configuration.userContentController addUserScript:[[WKUserScript alloc] initWithSource:[[NSString alloc] initWithData:[NSData dataWithContentsOfURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"jsbridge" withExtension:@"js"]] encoding:NSUTF8StringEncoding] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]];
@@ -32,6 +38,12 @@
 - (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api {
     if (api.length > 0 && nativeAPI) {
         [self __bridge_apis][api] = nativeAPI;
+    }
+}
+
+- (void)bridge_registerJSPlugin:(NSString *)plugin {
+    if (plugin.length > 0) {
+        [self bridge_injectJS:plugin];
     }
 }
 
