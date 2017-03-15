@@ -101,10 +101,12 @@
     WebViewNativeAPI nativeAPI = [self __bridge_apis][api];
     if (nativeAPI) {
         __weak id wself = self;
-        nativeAPI(message.webView, params, ^(id result) {
-            if (callId > 0) {
-                [wself __bridge_executeJSCallback:callId params:result];
-            }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            nativeAPI(message.webView, params, ^(id result) {
+                if (callId > 0) {
+                    [wself __bridge_executeJSCallback:callId params:result];
+                }
+            });
         });
     }
 }
