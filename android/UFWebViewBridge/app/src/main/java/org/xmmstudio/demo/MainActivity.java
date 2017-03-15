@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         webView.loadUrl("file:///android_asset/index.html");
 //        webView.loadUrl("http://192.168.1.140:3000/index.html");
-        webView.setWebViewClient(new WebViewBridge.WebViewBridgeClient() {
-
-        });
+        
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {

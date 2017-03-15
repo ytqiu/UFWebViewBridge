@@ -2,6 +2,8 @@ package org.xmmstudio.ufwebviewbridge;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class WebViewBridge {
     private static final String TAG = "ufwvbridge";
     private static final String JSBRIDGE_FILE = "jsbridge.js";
+    public static Handler handler = new Handler(Looper.getMainLooper());
 
     private Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
@@ -155,24 +158,29 @@ public class WebViewBridge {
 
         JsonElement apiElem = element.getAsJsonObject().get("api");
         final JsonElement callIdElem = element.getAsJsonObject().get("callId");
-        JsonElement paramsElem = element.getAsJsonObject().get("params");
+        final JsonElement paramsElem = element.getAsJsonObject().get("params");
         if (apiElem == null || apiElem.isJsonNull() || !apiElem.isJsonPrimitive()
                 || paramsElem == null || paramsElem.isJsonNull()) {
             return;
         }
 
         String api = apiElem.getAsString();
-        WebViewBridgeApiHandler apiHandler = apiHandlers.get(api);
+        final WebViewBridgeApiHandler apiHandler = apiHandlers.get(api);
         if (apiHandler == null) {
             return;
         }
 
-        apiHandler.call(this.webView, paramsElem, new WebViewBridgeApiReturn() {
+        handler.post(new Runnable() {
             @Override
-            public void done(Object result) {
-                if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
-                    callJSCallback(callIdElem.getAsLong(), result);
-                }
+            public void run() {
+                apiHandler.call(WebViewBridge.this.webView, paramsElem, new WebViewBridgeApiReturn() {
+                    @Override
+                    public void done(Object result) {
+                        if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
+                            callJSCallback(callIdElem.getAsLong(), result);
+                        }
+                    }
+                });
             }
         });
     }
