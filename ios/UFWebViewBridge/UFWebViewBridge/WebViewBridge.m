@@ -25,6 +25,10 @@
     [self.configuration.userContentController addUserScript:[[WKUserScript alloc] initWithSource:[[NSString alloc] initWithData:[NSData dataWithContentsOfURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"jsbridge" withExtension:@"js"]] encoding:NSUTF8StringEncoding] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]];
     
     __weak id wself = self;
+    [self set__nativeDefaultAPI:^(WKWebView *webView, NSString *api, id params, WebViewNativeAPIReturnBlock returnBlock) {
+        NSLog(@"web.bridge.api[%@]: %@", api, params);
+    }];
+    
     [self __bridge_apis][@"log"] = ^(WKWebView *webView, NSString *message, WebViewNativeAPIReturnBlock returnBlock) {
         NSLog(@"web.bridge.log: %@", message);
     };
@@ -33,6 +37,10 @@
     };
     
     !setupBlock ?: setupBlock([self __bridge_apis]);
+}
+
+- (void)bridge_registerNativeDefaultAPI:(WebViewNativeDefaultAPI)defaultAPI {
+    [self set__nativeDefaultAPI:defaultAPI];
 }
 
 - (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api {
@@ -48,13 +56,21 @@
 }
 
 - (NSMutableDictionary *)__bridge_apis {
-    NSMutableDictionary *apis = objc_getAssociatedObject(self, "__bridge_apis");
+    NSMutableDictionary *apis = objc_getAssociatedObject(self, @selector(__bridge_apis));
     if (!apis) {
         apis = [[NSMutableDictionary alloc] init];
-        objc_setAssociatedObject(self, "__bridge_apis", apis, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        objc_setAssociatedObject(self, @selector(__bridge_apis), apis, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     
     return apis;
+}
+
+- (WebViewNativeDefaultAPI)__nativeDefaultAPI {
+    return objc_getAssociatedObject(self, @selector(__nativeDefaultAPI));
+}
+
+- (void)set__nativeDefaultAPI:(WebViewNativeDefaultAPI)defaultAPI {
+    objc_setAssociatedObject(self, @selector(__nativeDefaultAPI), defaultAPI, OBJC_ASSOCIATION_COPY);
 }
 
 - (BOOL)__bridge_apiExist:(NSString *)api {
@@ -98,15 +114,21 @@
         return;
     }
     
+    __weak id wself = self;
     WebViewNativeAPI nativeAPI = [self __bridge_apis][api];
     if (nativeAPI) {
-        __weak id wself = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             nativeAPI(message.webView, params, ^(id result) {
                 if (callId > 0) {
                     [wself __bridge_executeJSCallback:callId params:result];
                 }
             });
+        });
+    } else { // default api
+        ![self __nativeDefaultAPI] ?: [self __nativeDefaultAPI](message.webView, api, params, ^(id result) {
+            if (callId > 0) {
+                [wself __bridge_executeJSCallback:callId params:result];
+            }
         });
     }
 }

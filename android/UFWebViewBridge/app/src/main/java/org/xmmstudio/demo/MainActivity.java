@@ -38,9 +38,15 @@ public class MainActivity extends AppCompatActivity {
                 apiReturn.done(paramElem);
             }
         });
+//        webViewBridge.registerDefaultHandler(new WebViewBridge.WebViewBridgeDefaultHandler() {
+//            @Override
+//            public void call(WebView webView, String api, JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
+//                Log.e("testtest", "api[" + api + "]: " + paramElem.toString());
+//            }
+//        });
 
-        webView.loadUrl("file:///android_asset/index.html");
-//        webView.loadUrl("http://192.168.1.140:3000/index.html");
+//        webView.loadUrl("file:///android_asset/index.html");
+        webView.loadUrl("http://192.168.1.140:3000/test-bridge.html");
         
         webView.setWebChromeClient(new WebChromeClient() {
             @Override

@@ -1,7 +1,9 @@
 PODS:
-  - UFWebViewBridge (0.0.6)
+  - MJRefresh (3.1.12)
+  - UFWebViewBridge (0.0.9)
 
 DEPENDENCIES:
+  - MJRefresh (~> 3.1.12)
   - UFWebViewBridge (from `../../`)
 
 EXTERNAL SOURCES:
@@ -9,8 +11,9 @@ EXTERNAL SOURCES:
     :path: ../../
 
 SPEC CHECKSUMS:
-  UFWebViewBridge: 17d04a69ff657a55229815a2d886d24594505079
+  MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
+  UFWebViewBridge: 09c939f4348b487df0aee5f00a6217b3546905a4
 
-PODFILE CHECKSUM: 9a5d4e33add9d2d591e6bfdd250c12d392c6c777
+PODFILE CHECKSUM: 37b089990046058f5788971c3c4042167ceede67
 
 COCOAPODS: 1.0.1

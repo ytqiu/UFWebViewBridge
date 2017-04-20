@@ -1,5 +1,6 @@
 platform :ios, 8.0
 target 'Demo' do
+  pod 'MJRefresh', '~> 3.1.12'
   pod 'UFWebViewBridge', :path => '../../'
 #  pod 'UFWebViewBridge', :git => 'https://github.com/ytqiu/UFWebViewBridge.git', :tag => '0.0.1'
 end

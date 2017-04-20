@@ -28,8 +28,14 @@ import java.util.Map;
 public class WebViewBridge {
     private static final String TAG = "ufwvbridge";
     private static final String JSBRIDGE_FILE = "jsbridge.js";
-    public static Handler handler = new Handler(Looper.getMainLooper());
+    private static Handler handler = new Handler(Looper.getMainLooper());
 
+    private WebViewBridgeDefaultHandler defaultHandler = new WebViewBridgeDefaultHandler() {
+        @Override
+        public void call(WebView webView, String api, JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
+            Log.d(TAG, "default handler[" + api + "]: " + paramElem.toString());
+        }
+    };
     private Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
     private int jsApiCallId;
     private Map<Integer, WebViewBridgeJSApiCallback> callbacks = new HashMap<>();
@@ -88,6 +94,10 @@ public class WebViewBridge {
         if (api != null && apiHandler != null && api.trim().length() > 0) {
             apiHandlers.put(api, apiHandler);
         }
+    }
+
+    public void registerDefaultHandler(WebViewBridgeDefaultHandler defaultHandler) {
+        this.defaultHandler = defaultHandler;
     }
 
     public void registerJSPlugin(String plugin) {
@@ -166,7 +176,17 @@ public class WebViewBridge {
 
         String api = apiElem.getAsString();
         final WebViewBridgeApiHandler apiHandler = apiHandlers.get(api);
-        if (apiHandler == null) {
+        if (apiHandler == null) { // default handler
+            if (this.defaultHandler != null) {
+                this.defaultHandler.call(WebViewBridge.this.webView, api, paramsElem, new WebViewBridgeApiReturn() {
+                    @Override
+                    public void done(Object result) {
+                        if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
+                            callJSCallback(callIdElem.getAsLong(), result);
+                        }
+                    }
+                });
+            }
             return;
         }
 
@@ -203,6 +223,10 @@ public class WebViewBridge {
 
     public interface WebViewBridgeApiHandler {
         void call(WebView webView, JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
+    }
+
+    public interface WebViewBridgeDefaultHandler {
+        void call(WebView webView, String api, JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
     }
 
     public interface WebViewBridgeJSApiCallback {
