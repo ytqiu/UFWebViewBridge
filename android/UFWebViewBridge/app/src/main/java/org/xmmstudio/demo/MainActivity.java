@@ -15,6 +15,9 @@ import com.google.gson.JsonElement;
 
 import org.xmmstudio.ufwebviewbridge.WebViewBridge;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
 
@@ -38,12 +41,15 @@ public class MainActivity extends AppCompatActivity {
                 apiReturn.done(paramElem);
             }
         });
-//        webViewBridge.registerDefaultHandler(new WebViewBridge.WebViewBridgeDefaultHandler() {
-//            @Override
-//            public void call(WebView webView, String api, JsonElement paramElem, WebViewBridge.WebViewBridgeApiReturn apiReturn) {
-//                Log.e("testtest", "api[" + api + "]: " + paramElem.toString());
-//            }
-//        });
+        webViewBridge.registerDefaultHandler(new WebViewBridge.WebViewBridgeDefaultHandler() {
+            @Override
+            public void call(WebView webView, String api, JsonElement paramElem, long callId) {
+                Log.e("testtest", "api[" + api + "][" + callId + "]: " + paramElem.toString());
+                Map map = new HashMap();
+                map.put("name", "hello world");
+                webViewBridge.callJSCallback(callId, "hello world");
+            }
+        });
 
 //        webView.loadUrl("file:///android_asset/index.html");
         webView.loadUrl("http://192.168.1.140:3000/test-bridge.html");

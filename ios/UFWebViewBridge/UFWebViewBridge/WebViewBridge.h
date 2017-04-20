@@ -10,7 +10,7 @@
 #import <WebKit/WebKit.h>
 
 typedef void(^WebViewNativeAPIReturnBlock)(id result);
-typedef void(^WebViewNativeDefaultAPI)(WKWebView *webView, NSString *api, id params, WebViewNativeAPIReturnBlock returnBlock);
+typedef void(^WebViewNativeDefaultAPI)(WKWebView *webView, NSString *api, id params, NSUInteger callId);
 typedef void(^WebViewNativeAPI)(WKWebView *webView, id params, WebViewNativeAPIReturnBlock returnBlock);
 typedef void(^WebViewBridgeSetupBlock)(NSMutableDictionary *apis);
 typedef void(^WebViewJSAPICallback)(id result, NSError *error);
@@ -21,9 +21,13 @@ typedef void(^WebViewJSAPICallback)(id result, NSError *error);
 
 - (void)bridge_setup:(WebViewBridgeSetupBlock)setupBlock;
 
-- (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api;
+- (void)bridge_registerNativeDefaultAPI:(WebViewNativeDefaultAPI)defaultAPI;
+
+- (void)bridge_registerNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api;
 
 - (void)bridge_registerJSPlugin:(NSString *)plugin;
+
+- (void)bridge_executeJSCallback:(NSUInteger)callId params:(id)params;
 
 - (void)bridge_callJSAPI:(NSString *)jsapi params:(id)params callback:(WebViewJSAPICallback)callback;
 

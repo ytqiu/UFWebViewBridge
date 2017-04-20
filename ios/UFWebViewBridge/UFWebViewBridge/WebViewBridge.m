@@ -25,8 +25,8 @@
     [self.configuration.userContentController addUserScript:[[WKUserScript alloc] initWithSource:[[NSString alloc] initWithData:[NSData dataWithContentsOfURL:[[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"ufwebviewbridge" ofType:@"bundle"]] URLForResource:@"jsbridge" withExtension:@"js"]] encoding:NSUTF8StringEncoding] injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO]];
     
     __weak id wself = self;
-    [self set__nativeDefaultAPI:^(WKWebView *webView, NSString *api, id params, WebViewNativeAPIReturnBlock returnBlock) {
-        NSLog(@"web.bridge.api[%@]: %@", api, params);
+    [self set__nativeDefaultAPI:^(WKWebView *webView, NSString *api, id params, NSUInteger callId) {
+        NSLog(@"web.bridge.api[%@][%lu]: %@", api, callId, params);
     }];
     
     [self __bridge_apis][@"log"] = ^(WKWebView *webView, NSString *message, WebViewNativeAPIReturnBlock returnBlock) {
@@ -43,7 +43,7 @@
     [self set__nativeDefaultAPI:defaultAPI];
 }
 
-- (void)bridge_reigsterNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api {
+- (void)bridge_registerNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api {
     if (api.length > 0 && nativeAPI) {
         [self __bridge_apis][api] = nativeAPI;
     }
@@ -81,7 +81,7 @@
     [self evaluateJavaScript:[NSString stringWithFormat:@"window.bridge.nativeCall('%@', %@)", jsapi, [self __bridge_toJSObject:params]] completionHandler:callback];
 }
 
-- (void)__bridge_executeJSCallback:(NSUInteger)callId params:(NSDictionary *)params {
+- (void)bridge_executeJSCallback:(NSUInteger)callId params:(id)params {
     [self bridge_callJSAPI:[NSString stringWithFormat:@"callback:%lu", callId] params:params callback:nil];
 }
 
@@ -120,16 +120,12 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             nativeAPI(message.webView, params, ^(id result) {
                 if (callId > 0) {
-                    [wself __bridge_executeJSCallback:callId params:result];
+                    [wself bridge_executeJSCallback:callId params:result];
                 }
             });
         });
     } else { // default api
-        ![self __nativeDefaultAPI] ?: [self __nativeDefaultAPI](message.webView, api, params, ^(id result) {
-            if (callId > 0) {
-                [wself __bridge_executeJSCallback:callId params:result];
-            }
-        });
+        ![self __nativeDefaultAPI] ?: [self __nativeDefaultAPI](message.webView, api, params, callId);
     }
 }
 

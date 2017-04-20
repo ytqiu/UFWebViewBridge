@@ -32,8 +32,8 @@ public class WebViewBridge {
 
     private WebViewBridgeDefaultHandler defaultHandler = new WebViewBridgeDefaultHandler() {
         @Override
-        public void call(WebView webView, String api, JsonElement paramElem, WebViewBridgeApiReturn apiReturn) {
-            Log.d(TAG, "default handler[" + api + "]: " + paramElem.toString());
+        public void call(WebView webView, String api, JsonElement paramElem, long callId) {
+            Log.d(TAG, "default handler[" + api + "][" + callId + "]: " + paramElem.toString());
         }
     };
     private Map<String, WebViewBridgeApiHandler> apiHandlers = new HashMap<>();
@@ -175,17 +175,11 @@ public class WebViewBridge {
         }
 
         String api = apiElem.getAsString();
+        final long callId = callIdElem != null && callIdElem.isJsonPrimitive() ? callIdElem.getAsJsonPrimitive().getAsLong() : 0;
         final WebViewBridgeApiHandler apiHandler = apiHandlers.get(api);
         if (apiHandler == null) { // default handler
             if (this.defaultHandler != null) {
-                this.defaultHandler.call(WebViewBridge.this.webView, api, paramsElem, new WebViewBridgeApiReturn() {
-                    @Override
-                    public void done(Object result) {
-                        if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
-                            callJSCallback(callIdElem.getAsLong(), result);
-                        }
-                    }
-                });
+                this.defaultHandler.call(WebViewBridge.this.webView, api, paramsElem, callId);
             }
             return;
         }
@@ -196,8 +190,8 @@ public class WebViewBridge {
                 apiHandler.call(WebViewBridge.this.webView, paramsElem, new WebViewBridgeApiReturn() {
                     @Override
                     public void done(Object result) {
-                        if (callIdElem != null && !callIdElem.isJsonNull() && callIdElem.isJsonPrimitive()) {
-                            callJSCallback(callIdElem.getAsLong(), result);
+                        if (callId > 0) {
+                            callJSCallback(callId, result);
                         }
                     }
                 });
@@ -226,7 +220,7 @@ public class WebViewBridge {
     }
 
     public interface WebViewBridgeDefaultHandler {
-        void call(WebView webView, String api, JsonElement paramElem, WebViewBridgeApiReturn apiReturn);
+        void call(WebView webView, String api, JsonElement paramElem, long callId);
     }
 
     public interface WebViewBridgeJSApiCallback {

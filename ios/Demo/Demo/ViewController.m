@@ -22,12 +22,17 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.webView = [[WKWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.webView bridge_setup:^(NSMutableDictionary *apis) {
-//        apis[@"hello"] = ^(WKWebView *webView, NSDictionary *params, WebViewNativeAPIReturnBlock returnBlock) {
-//            NSLog(@"web bridge hello called....: %@", params);
-//            returnBlock(params);
-//        };
+        apis[@"hello"] = ^(WKWebView *webView, NSDictionary *params, WebViewNativeAPIReturnBlock returnBlock) {
+            NSLog(@"web bridge hello called....: %@", params);
+            returnBlock(params);
+        };
     }];
-    [self.webView bridge_reigsterNativeAPI:^(WKWebView *webView, NSDictionary *params, WebViewNativeAPIReturnBlock returnBlock) {
+    [self.webView bridge_registerNativeDefaultAPI:^(WKWebView *webView, NSString *api, id params, NSUInteger callId) {
+        NSLog(@"call api[%@][%lu]: %@", api, callId, params);
+        [self.webView bridge_executeJSCallback:callId params:@{@"name": @"hello world"}];
+    }];
+    
+    [self.webView bridge_registerNativeAPI:^(WKWebView *webView, NSDictionary *params, WebViewNativeAPIReturnBlock returnBlock) {
         NSLog(@"web bridge hello called....: %@", params);
         returnBlock(params);
     } forName:@"hello"];
