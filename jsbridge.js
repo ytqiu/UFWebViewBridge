@@ -37,7 +37,10 @@
             this.callNative('checkApi', api, callback)
         },
         log: function (message) {
-            this.callNative('log', message)
+            this.callNative('log', JSON.stringify(message))
+        },
+        postMessage: function (message) {
+            this.callNative('message', JSON.stringify(message))
         },
     }
 })();
