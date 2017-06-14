@@ -39,6 +39,10 @@
     !setupBlock ?: setupBlock([self __bridge_apis]);
 }
 
+- (void)bridge_cleanup {
+    [self.configuration.userContentController removeScriptMessageHandlerForName:@"apis"];
+}
+
 - (void)bridge_registerNativeDefaultAPI:(WebViewNativeDefaultAPI)defaultAPI {
     [self set__nativeDefaultAPI:defaultAPI];
 }

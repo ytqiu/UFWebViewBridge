@@ -21,6 +21,8 @@ typedef void(^WebViewJSAPICallback)(id result, NSError *error);
 
 - (void)bridge_setup:(WebViewBridgeSetupBlock)setupBlock;
 
+- (void)bridge_cleanup;
+
 - (void)bridge_registerNativeDefaultAPI:(WebViewNativeDefaultAPI)defaultAPI;
 
 - (void)bridge_registerNativeAPI:(WebViewNativeAPI)nativeAPI forName:(NSString *)api;
